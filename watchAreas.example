@@ -1,0 +1,42 @@
+###
+See each of the modules
+in the lib/modules
+directory for specifications
+
+Each part must have
+  type: [the type specified at the top of each module]
+  dir: [the relative path to root to watch in]
+###
+module.exports =
+  section1:
+    root: '/director1/'
+    parts:[
+      {
+        type: 'coffee'
+        dir: 'public/coffee/'
+        outputDir: 'public/javascripts/'
+      }
+      {
+        type: 'sass'
+        dir: 'public/sass/'
+        singleFile:[
+          {
+            input: 'style.sass'
+            output: '../stylesheets/style.css'
+          }
+        ]
+      }
+    ]
+  section2:
+    root: '/home/user/section2/'
+    parts:[
+      {
+        type: 'php'
+        dir: 'phpApp/'
+      }
+      {
+        type: 'phpunit'
+        dir: 'phpApp/'
+        test: 'monit/.test/'
+      }
+    ]

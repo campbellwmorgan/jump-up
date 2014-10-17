@@ -1,0 +1,35 @@
+{
+  "name": "jump-up",
+  "dependencies": {
+    "coffee-script": "~1.8.0",
+    "commander": "*",
+    "lodash": "^2.4.1",
+    "node-watch": "^0.3.4",
+    "optimist": "^0.6.1"
+  },
+  "version": "0.0.5",
+  "description": "Executes a series of bash commands on filechange. Listens to response and notifies errors",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "jumpup": "./bin/jumpup"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/campbellwmorgan/jump-up"
+  },
+  "keywords": [
+    "gnome",
+    "watcher",
+    "cli",
+    "notify-send"
+  ],
+  "author": "Campbell Morgan <campbellmorgan@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/campbellwmorgan/jump-up/issues"
+  },
+  "homepage": "https://github.com/campbellwmorgan/jump-up"
+}
