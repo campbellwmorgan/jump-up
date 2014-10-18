@@ -9,9 +9,4 @@ class JasmineNode extends JasmineLocal
   _getJasminePath: ->
     "jasmine-node"
 
-  alertFilter: (stdout, stderr, writeError) ->
-    if stdout.match /0 failures/g
-      writeError stdout
-
-
 module.exports = JasmineNode
