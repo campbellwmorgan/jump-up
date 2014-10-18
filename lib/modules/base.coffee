@@ -9,12 +9,17 @@ class Base
   # regex to match the extension
   extension: false # or /\.extension$/
 
-  constructor: (runTask, @matchDir, @appRoot, @item) ->
+  constructor: (runTask, @appRoot, @item) ->
     return unless runTask?
 
     @workingDir = @appRoot + @item.dir
     @runTimeouts = {}
     @_debounceTime = @debounceTime
+    # allow override of debounceTime
+    # (time in ms)
+    if 'debounce' of @item
+      @_debounceTime = @item.debounce
+
     @setup(runTask)
 
   setup: (runTask) =>
@@ -27,6 +32,21 @@ class Base
 
   match: (filename) =>
     @matchDir @workingDir, filename
+
+  ###
+  Validates whether filepath
+  is within src directory
+  @return {boolean}
+  ###
+  matchDir: (src, filepath) ->
+    match = true
+    splitDir = src.split('/')
+    splitDir.forEach (item, index) ->
+      return if index is (splitDir.length - 1)
+      match = false unless filepath.split('/')[index] is item
+      true
+
+    match
 
   start: (filename) =>
     return if @extension and not filename.match @extension

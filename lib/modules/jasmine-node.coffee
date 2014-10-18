@@ -1,15 +1,13 @@
-Base = require './base'
+JasmineLocal = require './jasmine-local'
 
-class JasmineNode extends Base
+class JasmineNode extends JasmineLocal
 
   type: 'jasmine-node'
 
   extension: false
 
-  run: (item, filename) =>
-    return unless @match filename
-    console.log 'running jasmine node'
-    @runTask "jasmine-node --coffee #{@appRoot}#{item.specDir}"
+  _getJasminePath: ->
+    "jasmine-node"
 
   alertFilter: (stdout, stderr, writeError) ->
     if stdout.match /0 failures/g

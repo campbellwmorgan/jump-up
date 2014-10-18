@@ -5,8 +5,8 @@ A command-line tool for watching file changes
 and then executing cli commands.
 
 By default it listens to STDOUT and STDERR for
-module-dependent triggers then executes the Gnome
-"notify" command
+module-dependent triggers then uses the node-notifier
+to defer to platform-specific desktop notifications
 
 N.B You MUST install all command line utilities separately
 
@@ -21,8 +21,6 @@ N.B You MUST install all command line utilities separately
 
         Options:
           --config a .js or .coffee config file (see watchAreas.example)
-          --platform <gnome|osx> see ./lib/notify.coffee for options
-
 
 ###Config File
 
@@ -82,9 +80,17 @@ config file example
   Config:
 
           type: 'jasmine-local'
-          testPrefix: 'test/unit/' # directory where tests are located
+          testDir: 'test/unit/' # directory where tests are located
+          perFile: true # only executes the test for the file changed
           dir: 'main-scripts/'
+
           coffee: true # run with the --coffee flag
+
+          # number of ms to debounce
+          # (prevents tests being run too
+          # many times on double-save)
+          debounce: 100
+
           verbose: true # run with the --verbose flag
           # any environmental variables to precede the
           # execution
@@ -100,7 +106,16 @@ config file example
   Config
 
         type: 'jasmine-node'
-        dir: 'src/'
+        testDir: 'test/unit/' # directory where tests are located
+        perFile: true # only executes the test for the file changed
+        dir: 'main-scripts/'
+        coffee: true # run with the --coffee flag
+        verbose: true # run with the --verbose flag
+        # any environmental variables to precede the
+        # execution
+        env: [
+          'NODE_ENV':'testing'
+        ]
 
 
 ####Karma

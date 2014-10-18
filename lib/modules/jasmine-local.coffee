@@ -13,22 +13,98 @@ class JasmineLocal extends Base
   extension: /\.coffee$/
 
   run: (item, filename) =>
-    return unless @match filename
-    fileBase = path.basename filename
-    nameOnly = fileBase.replace /\.[^\.]+$/, ''
-    dir = path.dirname filename
-    relativePath = path.relative(@appRoot, dir) + '/'
+    mainMatch = @match filename
+    testDirMatch = @matchDir @appRoot + item.testDir
+    , filename
 
-    testPrefix = if 'testPrefix' of item
-    then item.testPrefix
-    else 'test/'
-    specFile = @appRoot + testPrefix + relativePath +
-    @_toCamel(nameOnly) + '_spec.coffee'
-
-    unless fs.existsSync(specFile)
-      return console.log("No tests found for #{specFile}")
+    return if not mainMatch and not testDirMatch
 
     console.log 'running local jasmine node'
+
+    envs = @_makeEnvs item
+    flags = @_getFlags item
+    specFile = @_getTarget item, filename
+    jasminePath = @_getJasminePath()
+    unless specFile
+      return console.error("Spec File not found for #{filename}")
+    # try and find the spec file
+    @runTask "#{envs}#{jasminePath} #{flags} #{specFile}"
+
+  _getJasminePath: =>
+    "#{@appRoot}/node_modules/.bin/jasmine-node"
+
+  ###
+  Either returns the test
+  directory or finds a specific
+  file if the test directory
+  mirrors main directory hierarchy
+  eg:
+    original file is controllers/MyController.coffee
+    test file is test/controllers/myController_spec.coffee
+
+  @return {string}
+  ###
+  _getTarget: (item, filename) =>
+    # return directory if whole directory
+    # is being tested
+    return item.testDir unless item.perFile
+
+    testPath = @_getTestDirectory item, filename
+
+    nameOnly = @_getBasename filename
+
+    ext = @_getExtension item
+
+    # try to find the spec file as written
+    noCaseChange = testPath + nameOnly + '_spec' + ext
+    if fs.existsSync(noCaseChange)
+      return noCaseChange
+
+    camelName = testPath + @_toCamel(nameOnly) + ext
+    if fs.existsSync(camelName)
+      return camelName
+
+    lowercase = testPath + nameOnly.toLowerCase() + ext
+    if fs.existsSync(lowercase)
+      return lowercase
+
+    return false
+
+  ###
+  Gets the basename (excluding _spec)
+  of the filename
+  ###
+  _getBasename: (filename) ->
+    fileBase = path.basename filename
+    nameOnly = fileBase
+      .replace(/\.[^\.]+$/, '')
+      .replace(/\_spec/, '')
+
+  ###
+  Gets the absolute path of the test directory
+  @return {string}
+  ###
+  _getTestDirectory: (item, filename) =>
+    dir = path.dirname filename
+
+    relativePath = path.relative(@appRoot, dir) + '/'
+
+    testDir = if 'testDir' of item
+    then item.testDir
+    else 'test/'
+    # if the file is in the test directory
+    # then just test the relative path
+    if relativePath.indexOf(testDir) is 0
+      testDir= ''
+
+    testPath = @appRoot + testDir + relativePath
+
+  _getExtension: (item) ->
+    if item.coffee? and item.coffee
+    then '.coffee'
+    else '.js'
+
+  _getFlags: (item) ->
     # add verbose flag
     verbose = if 'verbose' of item and item.verbose
     then ' --verbose'
@@ -37,9 +113,9 @@ class JasmineLocal extends Base
     coffee = if 'coffee' of item and item.verbose
     then ' --coffee'
     else ''
-    envs = @_makeEnvs item
-    # try and find the spec file
-    @runTask "#{envs}#{@appRoot}/node_modules/.bin/jasmine-node #{coffee} #{verbose} #{specFile}"
+
+    coffee + ' ' + verbose
+
 
   _makeEnvs: (item) ->
     return '' unless 'env' of item
@@ -50,13 +126,28 @@ class JasmineLocal extends Base
   _toCamel: (string) ->
     string.charAt(0).toLowerCase() + string.slice(1)
 
+  ###
+  Filter for command line errors
+  ###
   alertFilter: (stdout, stderr, writeError) ->
     if stdout.match /uncaughtException/g or
     stderr.match /uncaughtException/g
       writeError stdout
     if stdout.match /\[Error/g
       writeError stdout
-    if stdout.match /0 failures/g
+    matches = stdout.match /\d+ failures/gi
+    if matches and
+    not (matches[0] is "0 Failures" or
+      matches[0] is "0 failures"
+    )
+
       writeError stdout
+
+  ###
+  Execute watch on test dir too
+  ###
+  bootstrap: (watch, callback) =>
+    watch @appRoot + @item.testDir, callback
+
 
 module.exports = JasmineLocal

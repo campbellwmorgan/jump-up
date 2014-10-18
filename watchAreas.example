@@ -5,9 +5,29 @@ directory for specifications
 
 Each part must have
   type: [the type specified at the top of each module]
-  dir: [the relative path to root to watch in]
+  dir: [the relative path to root to watch in] (must have trailing /)
+
 ###
 module.exports =
+  # this is runs the unit tests
+  # for jump up
+  jumpup:
+    root: __dirname + '/'
+    parts: [
+      {
+        type: 'coffeelint'
+        dir: 'lib/'
+      }
+      {
+        type: 'jasmine-local'
+        testDir: 'test/'
+        perFile: true
+        dir: 'lib/'
+        coffee: true
+        verbose: true
+        debounce: 100
+      }
+    ]
   section1:
     root: '/director1/'
     parts:[

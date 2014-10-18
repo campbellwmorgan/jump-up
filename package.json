@@ -5,13 +5,14 @@
     "commander": "*",
     "lodash": "^2.4.1",
     "node-watch": "^0.3.4",
-    "optimist": "^0.6.1"
+    "optimist": "^0.6.1",
+    "node-notifier": "^4.0.2"
   },
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Executes a series of bash commands on filechange. Listens to response and notifies errors",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/jasmine-node --coffee test/"
   },
   "bin": {
     "jumpup": "./bin/jumpup"
@@ -31,5 +32,8 @@
   "bugs": {
     "url": "https://github.com/campbellwmorgan/jump-up/issues"
   },
-  "homepage": "https://github.com/campbellwmorgan/jump-up"
+  "homepage": "https://github.com/campbellwmorgan/jump-up",
+  "devDependencies": {
+    "jasmine-node": "^2.0.0"
+  }
 }
