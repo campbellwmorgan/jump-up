@@ -8,7 +8,7 @@
     "optimist": "^0.6.1",
     "node-notifier": "^4.0.2"
   },
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Executes a series of bash commands on filechange. Listens to response and notifies errors",
   "main": "index.js",
   "scripts": {

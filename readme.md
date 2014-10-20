@@ -89,7 +89,7 @@ config file example
           # number of ms to debounce
           # (prevents tests being run too
           # many times on double-save)
-          debounce: 100
+          Debounce: 100
 
           verbose: true # run with the --verbose flag
           # any environmental variables to precede the
@@ -110,7 +110,14 @@ config file example
         perFile: true # only executes the test for the file changed
         dir: 'main-scripts/'
         coffee: true # run with the --coffee flag
+
+        # number of ms to debounce
+        # (prevents tests being run too
+        # many times on double-save)
+        Debounce: 100
+
         verbose: true # run with the --verbose flag
+
         # any environmental variables to precede the
         # execution
         env: [
@@ -125,6 +132,23 @@ config file example
         type: 'karma'
         config: 'relative/path/to/config.js'
         dir: 'karma/'
+
+####NPMTest
+
+  Executes "npm test"
+
+        type: 'npm-test'
+        dir: 'watchDir/'
+
+        # custom regex for filematching
+        # eg /\.coffee$/
+        regex: false
+
+        # custom regex for matching
+        # text in stdout for throwing
+        # error notifications
+        # eg /\.[1-9] Failures/g
+        customError: false
 
 ####PHP
 

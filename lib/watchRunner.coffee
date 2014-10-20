@@ -50,7 +50,7 @@ module.exports = (modules, watch, runTask, argv, log)->
       # in directory
       if _.isArray item.dir
         item.dir.forEach (newDir) ->
-          uatch appRoot + newDir, callback
+          watch appRoot + newDir, callback
           if argv.debug
             log.log "starting watch for #{item.type} in",  appRoot + newDir
       else

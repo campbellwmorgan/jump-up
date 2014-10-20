@@ -59,6 +59,14 @@ class Base
   bootstrap: (watch, callback) =>
 
   ###
+  Main Run function to be overriden
+  in each module
+  @param {object} config item
+  @param {string} filePath
+  ###
+  run: (item, filename) =>
+
+  ###
   Interal function for
   running watch on altDir if it exists
   ###
