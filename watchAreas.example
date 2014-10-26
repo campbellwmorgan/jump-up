@@ -28,7 +28,7 @@ module.exports =
         debounce: 100
       }
     ]
-  section1:
+  default:
     root: '/director1/'
     parts:[
       {

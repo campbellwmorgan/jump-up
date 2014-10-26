@@ -15,7 +15,13 @@ module.exports = (modules, watch, runTask, argv, log)->
     # individual "topics" inside
     # a group
     parts = sect.parts
-    appRoot = sect.root
+    unless parts
+      parts = []
+
+    appRoot = if sect.root
+    then sect.root
+    else process.cwd() + '/'
+
     # timeout for preventing
     # item from being run too many times
     inProcess = false

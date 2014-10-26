@@ -62,6 +62,17 @@ config file example
           type: 'coffeelint'
           dir: 'coffee/'
 
+####Gulp
+
+  Executes Gulp
+
+  Config Example:
+
+          type: 'gulp'
+          dir: ['coffee','sass'] # or 'coffee'
+          regex: /*.coffee/ # only run
+          section: 'sass' # name of the gulp action
+
 
 ####Grunt
 

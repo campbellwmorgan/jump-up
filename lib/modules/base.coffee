@@ -1,3 +1,4 @@
+_ = require 'lodash'
 class Base
   # extend this with the
   # method type
@@ -12,7 +13,11 @@ class Base
   constructor: (runTask, @appRoot, @item) ->
     return unless runTask?
 
-    @workingDir = @appRoot + @item.dir
+    if _.isString @item.dir
+      @workingDir = @appRoot + @item.dir
+    else
+      @workingDir = @appRoot
+
     @runTimeouts = {}
     @_debounceTime = @debounceTime
     # allow override of debounceTime

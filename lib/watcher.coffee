@@ -5,7 +5,10 @@ moduleLoader = require './moduleLoader'
 watchRunner = require './watchRunner'
 RunTask = require './runTask'
 
-defaultConfig = __dirname + '/../watchAreas'
+# assume config file is
+# the jumpup.coffee file
+# in the current working directory
+defaultConfig = process.cwd() + '/jumpup.coffee'
 
 notifyModules = require('./notify')
 
@@ -55,9 +58,6 @@ module.exports = (overrides = {}) ->
   if overrides.modules
     modules = overrides.modules
 
-  unless argv._.length
-    log.error "Usage: jumpup [options] <secion1> <section2>"
-    process.exit()
 
   unless overrides.config?
     unless fs.existsSync(argv.config)
@@ -71,13 +71,27 @@ module.exports = (overrides = {}) ->
   else
     sections = overrides.config
 
+  unless argv._.length
+    # check whether there is a default section
+    # as no section has been specified
+    unless 'default' of sections
+      log.error "Usage: jumpup [options] <secion1> <section2>"
+      process.exit()
+
+    tasks = ['default']
+  else
+    tasks = argv._
+
+
+
+
   runWatch = watchRunner modules, watch, runTask, argv, log
 
   # begin the watch process
   beginWatch = () ->
-    return log.log 'please enter a watch area ' if process.argv.length < 3
+    return log.log 'please enter a watch area ' unless tasks.length
     appRoot = process.argv[1].replace /devUtils.*$/, ''
-    argv._.forEach (section) ->
+    tasks.forEach (section) ->
       if section of sections
         log.log 'initialising watch for ' + section
         # begin the watch process

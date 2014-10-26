@@ -10,6 +10,6 @@ class Grunt extends Base
     return if item.limitToDir? and
     not @matchDir(@appRoot + item.dir, filename)
     console.log 'running Grunt in directory'
-    runTask 'cd ' + workingDir + ' ; grunt'
+    @runTask 'cd ' + @workingDir + ' ; grunt'
 
 module.exports = Grunt
