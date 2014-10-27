@@ -90,7 +90,6 @@ module.exports = (overrides = {}) ->
   # begin the watch process
   beginWatch = () ->
     return log.log 'please enter a watch area ' unless tasks.length
-    appRoot = process.argv[1].replace /devUtils.*$/, ''
     tasks.forEach (section) ->
       if section of sections
         log.log 'initialising watch for ' + section

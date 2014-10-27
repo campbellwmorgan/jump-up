@@ -25,10 +25,15 @@ class Sass extends Base
       console.log 'Compiling ' + filename
 
   _loadPath: (item) ->
-    loadPath = ' --load-path ~/websites/bourbon '
     return loadPath unless 'loadPath' of item
-    loadPath+= ' --load-path ' + @workingDir + item.loadPath + ' '
+    unless _.isArray item.loadPath
+      item.loadPath = [item.loadPath]
 
-    loadPath
-
+    loadPath = _.reduce item.loadPath, (memo, path) =>
+      isAbsolute = path.match /^\//
+      fullPath = if isAbsolute then path
+      else @workingDir + path
+      memo+= " --load-path #{fullPath}"
+      memo
+    , ''
 module.exports = Sass

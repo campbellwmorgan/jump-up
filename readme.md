@@ -22,10 +22,24 @@ N.B You MUST install all command line utilities separately
         Options:
           --config a .js or .coffee config file (see watchAreas.example)
 
+###Why not Gulp-watch or grunt-watch?
+
+Gulp watch and grunt watch are great workflow tools, but when
+working in development environments which depend on more
+than one service or programming language creating a single "God" grunt/gulpfile
+or opening multiple terminal windows to run them is cumbersome and slows
+down the dev process.
+
+Jump-Up solves this by enabling each service/language to have its own gulp/grunt
+file or a test/make file which can be triggered on change and can all be
+launched simultaneously from one command eg:
+
+          jumpup phpServer nodeJSService goServer
+
+
 ###Config File
 
-See "watchAreas.example" for a coffee-script
-config file example
+See "jumpup.coffee" for an example coffeescript config file
 
 
 ###Modules
@@ -228,7 +242,10 @@ config file example
         input: 'sourceSassFile.sass'
         output: 'outputFile.css'
         style: 'compressed' # nested, compact, expanded
-        loadPath: '/path/to/bourbon' # additional load path
+
+        # additional load path(s)
+        # can be an array of load paths instead
+        loadPath: '/path/to/bourbon'
 
 
 

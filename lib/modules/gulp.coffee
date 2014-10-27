@@ -8,7 +8,7 @@ class Gulp extends Base
   run: (item, filename) =>
     # return unless regex match
     if item.regex
-      return unless filname.match item.regex
+      return unless filename.match item.regex
 
     return unless @match filename
 
@@ -16,7 +16,12 @@ class Gulp extends Base
 
     console.log 'running gulp in directory'
 
-    command = "cd #{@appRoot} && " +
+    gulpPath = if item.gulpDir
+    then @appRoot + item.gulpDir
+    else @appRoot
+
+
+    command = "cd #{gulpPath} && " +
     "./node_modules/.bin/gulp #{section}"
 
     @runTask command

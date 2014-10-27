@@ -11,7 +11,7 @@ Each part must have
 module.exports =
   # this is runs the unit tests
   # for jump up
-  jumpup:
+  default:
     root: __dirname + '/'
     parts: [
       {
@@ -28,8 +28,8 @@ module.exports =
         debounce: 100
       }
     ]
-  default:
-    root: '/director1/'
+  site1:
+    root: '/directory1/'
     parts:[
       {
         type: 'coffee'
@@ -47,16 +47,21 @@ module.exports =
         ]
       }
     ]
-  section2:
-    root: '/home/user/section2/'
+  phpApp:
+    root: '/home/user/phpApp/'
     parts:[
       {
         type: 'php'
-        dir: 'phpApp/'
+        dir: 'app/'
       }
       {
         type: 'phpunit'
-        dir: 'phpApp/'
-        test: 'monit/.test/'
+        dir: 'app/'
+        test: 'test/'
+      }
+      {
+        type: 'custom'
+        description: 'Launches the php server'
+        bootstrap: 'cd /home/user/section2 && php -S localhost:8000'
       }
     ]
