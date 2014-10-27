@@ -12,7 +12,7 @@ module.exports = (modules, watch, runTask, argv, log)->
   ###
   Executes with for specific section
   ###
-  main = (sect) ->
+  main = (sect, sectName) ->
     # individual "topics" inside
     # a group
     parts = sect.parts
@@ -29,13 +29,18 @@ module.exports = (modules, watch, runTask, argv, log)->
 
     getModule = (item) ->
       return false unless item.type of modules
-      if item.type of moduleCache
-        return moduleCache[item.type]
+      hashKey = item.type + sectName
+      # check key exists in cache
+      # then return it
+      if hashKey of moduleCache
+        return moduleCache[hashKey]
+
+      # otherwise create new instance
       Module = modules[item.type]
-      moduleCache[item.type] = new Module runTask
+      moduleCache[hashKey] = new Module runTask
       , appRoot, item
 
-      moduleCache[item.type]
+      moduleCache[hashKey]
 
     ###
     Callback called on each item

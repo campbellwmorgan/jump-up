@@ -88,7 +88,7 @@ See "jumpup.coffee" for an example coffeescript config file
           # amount of time in ms
           # to debounce / delay
           debounce: 500
-
+          
           # 'change' is run whenever
           # a file in 'dir' is modified
           # this would restart

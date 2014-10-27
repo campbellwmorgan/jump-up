@@ -94,7 +94,7 @@ module.exports = (overrides = {}) ->
       if section of sections
         log.log 'initialising watch for ' + section
         # begin the watch process
-        runWatch sections[section]
+        runWatch sections[section], section
       else
         log.log 'unrecognised section: ' + section
 
