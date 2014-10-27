@@ -62,6 +62,34 @@ config file example
           type: 'coffeelint'
           dir: 'coffee/'
 
+####Custom
+
+  Executes custom commands
+
+  Config Example:
+
+          type: 'custom'
+          dir: 'liveContent/'
+
+          # amount of time in ms
+          # to debounce / delay
+          debounce: 500
+
+          # 'change' is run whenever
+          # a file in 'dir' is modified
+          # this would restart
+          change: 'node app --dev'
+
+          # run once on load - good for
+          # running the development server
+          bootstap: 'node app --dev'
+
+          # should any running
+          # instances of this task
+          # be killed before running a new one
+          killExisting: true
+
+
 ####Gulp
 
   Executes Gulp

@@ -1,4 +1,5 @@
 _ = require 'lodash'
+async = require 'async'
 class Base
   # extend this with the
   # method type
@@ -15,8 +16,17 @@ class Base
 
     if _.isString @item.dir
       @workingDir = @appRoot + @item.dir
+
     else
-      @workingDir = @appRoot
+      if _.isArray @item.dir
+        @workingDir = _.map @item.dir, (dir) =>
+          @appRoot + dir
+      else
+        @workingDir = @appRoot
+
+    # list of active child processes
+    # for this module
+    @activeProcesses = {}
 
     @runTimeouts = {}
     @_debounceTime = @debounceTime
@@ -27,14 +37,64 @@ class Base
 
     @setup(runTask)
 
+  ###
+  Instantiates run task function
+  ###
   setup: (runTask) =>
     @runTask = (command) =>
       if command of @runTimeouts
         clearTimeout @runTimeouts[command]
       @runTimeouts[command] = setTimeout =>
-        runTask command, @alertFilter
+        child = runTask command, @alertFilter
+
+        # add kill command for child
+        # to list of
+        # active processes
+        pid = child.pid
+        @activeProcesses[pid] =
+          child: child
+          pid: pid
+          kill: (cb)->
+            child.on 'exit', (code) ->
+              cb(null, code)
+
+            child.kill('SIGTERM')
+
+
+        # when the child exists
+        # remove it from the list
+        # of active processes
+        child.on 'exit', =>
+          delete @activeProcesses[pid]
+
       , @_debounceTime
 
+  ###
+  Kills all childprocesses
+  running for this instance
+
+  @param {function} callback called when all killed
+  ###
+  killAll: (cb) =>
+    totalProcesses = _.keys(@activeProcesses).length
+
+    return cb() unless totalProcesses
+
+    processes = _.values(@activeProcesses)
+
+    async.each processes
+    , (proc, callback) ->
+      return callback() unless 'kill' of proc
+      proc.kill callback
+    , ->
+      cb()
+
+  ###
+  Tests if a file is
+  within the current working dir
+
+  @return {Boolean}
+  ###
   match: (filename) =>
     @matchDir @workingDir, filename
 
@@ -43,7 +103,19 @@ class Base
   is within src directory
   @return {boolean}
   ###
-  matchDir: (src, filepath) ->
+  matchDir: (src, filepath) =>
+
+    # match a series of directories
+    if _.isArray src
+      return _.reduce src, (memo, thisSrc) =>
+        # if already matched, return true
+        return memo if memo
+
+        return true if @matchDir thisSrc, filepath
+
+        false
+      , false
+
     match = true
     splitDir = src.split('/')
     splitDir.forEach (item, index) ->
@@ -80,7 +152,6 @@ class Base
       return @bootstrap watch, callback
 
     @item.altDir.forEach (altDir) =>
-      console.log 'adding alt dir. watch for ' +
       @appRoot + altDir
       watch @appRoot + altDir, callback
       true

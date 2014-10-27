@@ -7,6 +7,7 @@ module.exports = (writeError) ->
   ###
   @param {string} command
   @param {function} (stdout, stderr, writeError) ->
+  @return {ChildProcess}
   ###
   runTask = (command, alertCallback) ->
     child = exec command
@@ -18,3 +19,8 @@ module.exports = (writeError) ->
       sys.print data
       if alertCallback?
         alertCallback data, '', writeError
+
+
+    # return the child
+    # process
+    child

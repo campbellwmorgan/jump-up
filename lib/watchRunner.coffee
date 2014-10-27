@@ -8,6 +8,7 @@ in the user's config file
 @param {function} runtask - runner
 ###
 module.exports = (modules, watch, runTask, argv, log)->
+  moduleCache = {}
   ###
   Executes with for specific section
   ###
@@ -28,10 +29,13 @@ module.exports = (modules, watch, runTask, argv, log)->
 
     getModule = (item) ->
       return false unless item.type of modules
+      if item.type of moduleCache
+        return moduleCache[item.type]
       Module = modules[item.type]
-      module = new Module runTask
+      moduleCache[item.type] = new Module runTask
       , appRoot, item
 
+      moduleCache[item.type]
 
     ###
     Callback called on each item

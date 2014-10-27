@@ -10,15 +10,7 @@ class Gulp extends Base
     if item.regex
       return unless filname.match item.regex
 
-    # ensure item within set directory
-    if _.isArray item.dir
-      match = _.reduce item.dir, (memo, dir) =>
-        return memo if memo
-        return true if @matchDir(@appRoot + dir, filename)
-      , false
-      return unless match
-    else
-      return unless @matchDir(@appRoot + dir, filename)
+    return unless @match filename
 
     section = if item.section then item.section else ''
 
