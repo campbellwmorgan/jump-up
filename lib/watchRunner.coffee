@@ -12,7 +12,7 @@ module.exports = (modules, watch, runTask, argv, log)->
   ###
   Executes with for specific section
   ###
-  main = (sect, sectName) ->
+  main = (sect, sectName, count) ->
     # individual "topics" inside
     # a group
     parts = sect.parts
@@ -27,9 +27,9 @@ module.exports = (modules, watch, runTask, argv, log)->
     # item from being run too many times
     inProcess = false
 
-    getModule = (item) ->
+    getModule = (item, indx) ->
       return false unless item.type of modules
-      hashKey = item.type + sectName
+      hashKey = item.type + sectName + indx
       # check key exists in cache
       # then return it
       if hashKey of moduleCache
@@ -45,39 +45,40 @@ module.exports = (modules, watch, runTask, argv, log)->
     ###
     Callback called on each item
     ###
-    callback = (filename) ->
-      return if inProcess
-      inProcess = true
-      parts.forEach (item) ->
+    callback = (indx) ->
+      (filename) ->
+        return if inProcess
+        inProcess = true
+        parts.forEach (item) ->
 
-        # instantiate module
-        module = getModule item
-        if module
-          module.start filename
-      setTimeout ->
-        inProcess = false
-      , 3000
+          # instantiate module
+          module = getModule item, indx
+          if module
+            module.start filename
+        setTimeout ->
+          inProcess = false
+        , 3000
 
     # run bootstrap item
-    parts.forEach (item) ->
+    parts.forEach (item, indx) ->
 
       # cycle through array
       # in directory
       if _.isArray item.dir
         item.dir.forEach (newDir) ->
-          watch appRoot + newDir, callback
+          watch appRoot + newDir, callback(indx)
           if argv.debug
             log.log "starting watch for #{item.type} in",  appRoot + newDir
       else
-        res = watch appRoot + item.dir, callback
+        res = watch appRoot + item.dir, callback(indx)
         if argv.debug
           log.log "starting watch for #{item.type} in",  appRoot + item.dir
 
-      module = getModule item
+      module = getModule item, indx
       if module
         # execute any bootstrap functions
         # on module
-        module.runBootstrap watch, callback
+        module.runBootstrap watch, callback(indx)
 
       else
         log.error "Type #{item.type} not registered"

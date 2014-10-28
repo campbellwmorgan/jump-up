@@ -8,18 +8,20 @@ class PHPUnit extends Base
 
   run: (item, filename) =>
     mainMatch = @match filename
-    testMatch = @matchDir @appRoot + item.test + '/', filename
-    return if (!mainMatch && !testMatch)
+    testRoot = @appRoot + item.test + '/'
+    # remove any double slashes
+    testRoot = testRoot.replace /\/\//, '/'
+    testMatch = @matchDir testRoot, filename
+    return false if (!mainMatch && !testMatch)
 
     if 'oneFile' of item
       itemMatch = new RegExp(item.oneFile.replace(/\./,'\\.'))
       return unless filename.match itemMatch
-    console.log 'running phpunit'
-    @runTask 'phpunit' + @appRoot + item.test
+    @runTask 'phpunit ' + testRoot
 
   bootstrap: (watch, callback) =>
     # run another watch on the unit testing folder
-    watch @appRoot + @item.test + '/', callback
+    watch @appRoot + @item.test , callback
 
   alertFilter: (stdout, stderr, writeError) ->
     if stdout.match /FAILURE/g
