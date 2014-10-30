@@ -8,11 +8,13 @@ describe "Main watcher", ->
       constructor: (@runTask) ->
       start: (filename) =>
         expect(filename)
-          .toBe 'testFile.txt'
+          .toMatch /testFile.txt$/
 
         @runTask 'testCommand'
+
         expect(bootstrapRun)
           .toBe true
+        done()
       runBootstrap: (watch, cb) ->
         bootstrapRun = true
 
@@ -21,7 +23,6 @@ describe "Main watcher", ->
         'testModule': TestModule
       runTask: (command) ->
         expect(command).toBe 'testCommand'
-        done()
       argv:
         platform: 'node'
         debug: false
@@ -44,8 +45,8 @@ describe "Main watcher", ->
       watch: (dir, cb) ->
         expect(dir).toBe '/test/root/src/'
         setTimeout ->
-          cb 'testFile.txt'
-        , 150
+          cb '/test/root/src/testFile.txt'
+        , 30
 
     watcher overrides
 

@@ -9,21 +9,21 @@ class NPMTest extends Base
 
 
   run: (item, filename) =>
-    return unless @match filename
+    return false unless @match filename
 
     # run regex match
     if 'regex' of item and item.regex
-      return unless filename.match item.regex
+      return false unless filename.match item.regex
 
     console.log 'executing npm test in root directory'
 
     @runTask "cd #{@appRoot} && npm test"
 
-  alertFilter: (stdout, stderr, writeError) ->
+  alertFilter: (stdout, stderr, writeError) =>
     if stdout.match /uncaughtException/g
       writeError stdout
 
-    if 'customError' of @item and item.customError
+    if 'customError' of @item and @item.customError
       if stdout.match(
         @item.customError
       )

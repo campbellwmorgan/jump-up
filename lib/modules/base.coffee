@@ -47,6 +47,7 @@ class Base
       @runTimeouts[command] = setTimeout =>
         child = runTask command, @alertFilter
 
+        return unless child
         # add kill command for child
         # to list of
         # active processes
