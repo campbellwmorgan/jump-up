@@ -1,5 +1,6 @@
 _ = require 'lodash'
 async = require 'async'
+path = require 'path'
 class Base
   # extend this with the
   # method type
@@ -118,11 +119,11 @@ class Base
       , false
 
     match = true
-    splitDir = src.split('/')
-    splitDir.forEach (item, index) ->
-      return if index is (splitDir.length - 1)
-      match = false unless filepath.split('/')[index] is item
-      true
+    relative = path.relative(src, filepath)
+    # if relative path starts with contains ".."
+    # then outside directory root
+    if relative.match /^\.\./
+      return false
 
     match
 

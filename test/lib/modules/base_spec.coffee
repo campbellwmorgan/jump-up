@@ -28,8 +28,45 @@ describe "Module Base class", ->
       , 150
 
 
+  describe "matchDir", ->
+    base = false
+    beforeEach ->
+      runTask = run: (->)
+      base = new Base runTask, appRoot
+      ,
+        dir: ''
+        debounce: 1
 
+    it "should match directory", ->
 
+      expect(
+        base.matchDir(
+          '/test/one/two/three',
+          '/test/one/two/three/four/five'
+        )
+      ).toBe true
 
+    it "should match multiple directories", ->
+      expect(
+        base.matchDir(
+          [
+            '/test/one/two'
+            '/test/one/three'
+            '/test/other/four'
+          ]
+          '/test/one/three/five'
+        )
+      ).toBe true
+
+    it "should fail different directories", ->
+      expect(
+        base.matchDir(
+          [
+            '/test/one/two'
+            '/test/one/three'
+          ]
+          '/test/one/four/five/six'
+        )
+      ).toBe false
 
 

@@ -114,6 +114,10 @@ class JasmineLocal extends Base
     then ' --coffee'
     else ''
 
+    captureExceptions = if 'captureExceptions' of item and item.captureExceptions
+    then '--captureExceptions'
+    else ''
+
     coffee + ' ' + verbose
 
 
