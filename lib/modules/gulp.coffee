@@ -1,5 +1,6 @@
 Base = require './base'
 _ = require 'lodash'
+path = require 'path'
 
 class Gulp extends Base
 
@@ -12,19 +13,33 @@ class Gulp extends Base
 
     return unless @match filename
 
-    section = if item.section then item.section else ''
+    @runGulp()
+
+
+  runGulp: () =>
+    section = if @item.section
+    then @item.section else ''
 
     console.log 'running gulp in directory'
 
-    gulpPath = if item.gulpDir
-    then @appRoot + item.gulpDir
+    gulpPath = if @item.gulpDir
+    then @appRoot + @item.gulpDir
     else @appRoot
 
 
-    command = "cd #{gulpPath} && " +
-    "./node_modules/.bin/gulp #{section}"
+    command = path.join(
+      gulpPath,
+      'node_modules',
+      '.bin',
+      "gulp #{section}"
+    )
 
     @runTask command
+
+  bootstrap: =>
+    # run gulp if user has requested
+    # execute on start
+    @runGulp() if @item.executeOnStart
 
 
 

@@ -1,5 +1,7 @@
 Base = require './base'
 _ = require 'lodash'
+path = require 'path'
+
 class Sass extends Base
   type: 'sass'
 
@@ -15,8 +17,12 @@ class Sass extends Base
     else ''
     if 'singleFile' of item and item.singleFile.length
       _.each item.singleFile, (sassFile) =>
+        # allow absolute paths
+        outputSrc = if sassFile.output.match /^\/\w/
+        then sassFile.output
+        else @workingDir + sassFile.output
         @runTask "sass #{style} #{loadPath} " + @workingDir + sassFile.input +
-          ' ' + @workingDir + sassFile.output
+          ' ' + outputSrc
         console.log 'Change in ' + filename
         console.log 'Compiling ' + sassFile.input
     else

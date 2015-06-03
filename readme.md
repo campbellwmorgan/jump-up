@@ -88,7 +88,7 @@ See "jumpup.coffee" for an example coffeescript config file
           # amount of time in ms
           # to debounce / delay
           debounce: 500
-          
+
           # 'change' is run whenever
           # a file in 'dir' is modified
           # this would restart
@@ -114,6 +114,7 @@ See "jumpup.coffee" for an example coffeescript config file
           dir: ['coffee','sass'] # or 'coffee'
           regex: /*.coffee/ # only run
           section: 'sass' # name of the gulp action
+          executeOnStart: true # run gulp when first executing jumpup
 
 
 ####Grunt
