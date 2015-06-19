@@ -1,4 +1,3 @@
-sys = require 'sys'
 exec = require('child_process').exec
 ###
 Runs a command line command
@@ -12,11 +11,11 @@ module.exports = (writeError) ->
   runTask = (command, alertCallback) ->
     child = exec command
     child.stderr.on 'data', (data) ->
-      sys.print data
+      console.log data
       writeError data
 
     child.stdout.on 'data', (data) ->
-      sys.print data
+      console.log data
       if alertCallback?
         alertCallback data, '', writeError
 
