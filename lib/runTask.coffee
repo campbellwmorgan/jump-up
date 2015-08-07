@@ -6,10 +6,14 @@ module.exports = (writeError) ->
   ###
   @param {string} command
   @param {function} (stdout, stderr, writeError) ->
+  @param {String} current working directory
   @return {ChildProcess}
   ###
-  runTask = (command, alertCallback) ->
-    child = exec command
+  runTask = (command, alertCallback, cwd) ->
+    options = {}
+    options.cwd = cwd if cwd?
+    child = exec command, options
+
     child.stderr.on 'data', (data) ->
       console.log data
       writeError data

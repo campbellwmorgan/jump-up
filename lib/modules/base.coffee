@@ -42,11 +42,15 @@ class Base
   Instantiates run task function
   ###
   setup: (runTask) =>
-    @runTask = (command) =>
+    ###
+    # @param {String} command
+    # @param {String} current working directory (optional)
+    ###
+    @runTask = (command, cwd) =>
       if command of @runTimeouts
         clearTimeout @runTimeouts[command]
       @runTimeouts[command] = setTimeout =>
-        child = runTask command, @alertFilter
+        child = runTask command, @alertFilter, cwd
 
         return unless child
         # add kill command for child

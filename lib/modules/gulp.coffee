@@ -34,7 +34,7 @@ class Gulp extends Base
       "gulp #{section}"
     )
 
-    @runTask command
+    @runTask command, @appRoot
 
   bootstrap: =>
     # run gulp if user has requested
