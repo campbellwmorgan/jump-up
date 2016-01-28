@@ -1,6 +1,7 @@
 _ = require 'lodash'
 async = require 'async'
 path = require 'path'
+psTree = require 'ps-tree'
 class Base
   # extend this with the
   # method type
@@ -42,6 +43,7 @@ class Base
   Instantiates run task function
   ###
   setup: (runTask) =>
+    killPid = @killPid
     ###
     # @param {String} command
     # @param {String} current working directory (optional)
@@ -61,19 +63,49 @@ class Base
           child: child
           pid: pid
           kill: (cb)->
-            child.on 'exit', (code) ->
+            terminated = false
+            child.on 'exit', (code, signal) ->
               cb(null, code)
+              return unless terminated
+              terminated = true
+            child.on 'close', (code, signal) ->
+              return unless terminated
+              cb(null, code)
+              terminated = true
+            child.on 'error', (e) ->
+              console.error e, 'kill error'
 
-            child.kill('SIGTERM')
+            killPid pid
 
 
         # when the child exists
         # remove it from the list
         # of active processes
         child.on 'exit', =>
-          delete @activeProcesses[pid]
+          unless @activeProcesses[pid].child.connected
+            'test'
+            #delete @activeProcesses[pid]
 
       , @_debounceTime
+
+  ###
+  # Kills all items in a process
+  # tree
+  # @param {Integer} process id
+  # @param {String} Signal
+  ###
+  killPid: (pid, signal='SIGKILL', callback) ->
+    callback = callback or (->)
+    psTree pid, (err, children) ->
+      [pid].concat(
+        children.map((p) -> p.PID)
+      ).forEach((tpid) ->
+          try
+            process.kill(tpid, signal)
+          catch ex
+            console.error 'Error killing process', tpid
+      )
+      callback()
 
   ###
   Kills all childprocesses
@@ -92,8 +124,7 @@ class Base
     , (proc, callback) ->
       return callback() unless 'kill' of proc
       proc.kill callback
-    , ->
-      cb()
+    , cb
 
   ###
   Tests if a file is

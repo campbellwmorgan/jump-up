@@ -1,15 +1,16 @@
 {
   "name": "jump-up",
   "dependencies": {
+    "async": "^0.9.0",
     "coffee-script": "~1.8.0",
     "commander": "*",
     "lodash": "^2.4.1",
+    "node-notifier": "^4.2.3",
     "node-watch": "^0.3.4",
     "optimist": "^0.6.1",
-    "node-notifier": "^4.2.3",
-    "async": "^0.9.0"
+    "ps-tree": "^1.0.1"
   },
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "Executes a series of bash commands on filechange. Listens to response and notifies errors",
   "main": "index.js",
   "scripts": {

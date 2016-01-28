@@ -18,7 +18,13 @@ class Custom extends Base
     # and runTask when processes
     # have exited
     if item.killExisting
-      @killAll =>
+      @killAll (err, res) =>
+        if err
+          console.error 'Error killing task', err
+          return
+        console.log 'Killed task', item.description
+        , @activeProcesses
+
         setTimeout =>
           @runTask item.change
         , 500

@@ -15,7 +15,7 @@ module.exports = (writeError) ->
     child = exec command, options
 
     child.stderr.on 'data', (data) ->
-      console.log data
+      console.log 'Error:', data
       writeError data
 
     child.stdout.on 'data', (data) ->
