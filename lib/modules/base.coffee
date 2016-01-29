@@ -84,7 +84,7 @@ class Base
         child.on 'exit', =>
           unless @activeProcesses[pid].child.connected
             'test'
-            #delete @activeProcesses[pid]
+            delete @activeProcesses[pid]
 
       , @_debounceTime
 
@@ -103,7 +103,7 @@ class Base
           try
             process.kill(tpid, signal)
           catch ex
-            console.error 'Error killing process', tpid
+            console.error 'Error killing process', tpid, ex
       )
       callback()
 

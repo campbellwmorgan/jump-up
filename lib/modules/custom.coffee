@@ -21,9 +21,8 @@ class Custom extends Base
       @killAll (err, res) =>
         if err
           console.error 'Error killing task', err
-          return
-        console.log 'Killed task', item.description
-        , @activeProcesses
+        else
+          console.log 'Killed task', item.description
 
         setTimeout =>
           @runTask item.change

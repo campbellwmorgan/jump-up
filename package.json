@@ -10,7 +10,7 @@
     "optimist": "^0.6.1",
     "ps-tree": "^1.0.1"
   },
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "Executes a series of bash commands on filechange. Listens to response and notifies errors",
   "main": "index.js",
   "scripts": {
